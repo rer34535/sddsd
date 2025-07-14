@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الجفر المتقدمة - توقعات الدول والأشخاص</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8e44ad;
+            --primary-dark: #6c3483;
+            --secondary: #2c3e50;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --border-radius: 15px;
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            background: rgba(25, 42, 60, 0.92);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(142, 68, 173, 0.3);
+        }
+        
+        header h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0 20px;
+        }
+        
+        header p {
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            color: #d0e4ff;
+            padding: 0 20px;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr 2.5fr;
+            }
+        }
+        
+        .input-section, .results-section {
+            background: rgba(25, 42, 60, 0.92);
+            border-radius: var(--border-radius);
+            padding: 35px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(142, 68, 173, 0.2);
+        }
+        
+        .input-section h2, .results-section h2 {
+            color: var(--warning);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 28px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #d0e4ff;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            background: rgba(30, 50, 70, 0.7);
+            color: white;
+            font-size: 1.15rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--warning);
+            background: rgba(40, 60, 80, 0.8);
+            box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.4);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(40, 60, 80, 0.5);
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .radio-option:hover {
+            background: rgba(142, 68, 173, 0.3);
+        }
+        
+        .radio-option input {
+            width: 22px;
+            height: 22px;
+        }
+        
+        .radio-option label {
+            margin-bottom: 0;
+            font-size: 1.15rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+        }
+        
+        .result-card {
+            background: rgba(30, 45, 65, 0.85);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .result-card h3 {
+            color: var(--warning);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.7rem;
+        }
+        
+        .result-card p {
+            font-size: 1.15rem;
+            color: #e0f0ff;
+        }
+        
+        .number-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .number-item {
+            background: rgba(142, 68, 173, 0.25);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(142, 68, 173, 0.5);
+            transition: var(--transition);
+        }
+        
+        .number-item:hover {
+            background: rgba(142, 68, 173, 0.35);
+            transform: translateY(-5px);
+        }
+        
+        .number-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        
+        .number-label {
+            font-size: 1.1rem;
+            color: #bbb;
+        }
+        
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .prediction-item {
+            background: rgba(35, 55, 80, 0.8);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .prediction-item:hover {
+            transform: translateY(-8px);
+            background: rgba(40, 60, 85, 0.95);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        .prediction-title {
+            color: var(--warning);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(142, 68, 173, 0.4);
+        }
+        
+        .prediction-content {
+            line-height: 1.9;
+            color: #e0f0ff;
+            font-size: 1.1rem;
+        }
+        
+        .probability-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+        
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--warning));
+            border-radius: 4px;
+            width: 0;
+            transition: width 1.5s ease;
+        }
+        
+        .energy-badge {
+            display: inline-block;
+            padding: 7px 15px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 8px 5px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .energy-1 { background: rgba(231, 76, 60, 0.4); color: #ffb4b4; }
+        .energy-2 { background: rgba(46, 204, 113, 0.4); color: #c8ffdf; }
+        .energy-3 { background: rgba(52, 152, 219, 0.4); color: #c2e5ff; }
+        .energy-4 { background: rgba(155, 89, 182, 0.4); color: #e6cfff; }
+        .energy-5 { background: rgba(241, 196, 15, 0.4); color: #fff1b8; }
+        .energy-6 { background: rgba(230, 126, 34, 0.4); color: #ffe0c2; }
+        .energy-7 { background: rgba(26, 188, 156, 0.4); color: #c8fff4; }
+        .energy-8 { background: rgba(149, 165, 166, 0.4); color: #f0f0f0; }
+        .energy-9 { background: rgba(22, 160, 133, 0.4); color: #c8fff0; }
+        
+        .planet-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(40, 60, 80, 0.6);
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(142, 68, 173, 0.4);
+        }
+        
+        .planet-icon {
+            font-size: 3rem;
+            color: var(--warning);
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .planet-info h4 {
+            color: var(--warning);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        
+        .planet-info p {
+            color: #d0e4ff;
+            font-size: 1.1rem;
+        }
+        
+        .disclaimer {
+            background: rgba(231, 76, 60, 0.25);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 1px solid var(--danger);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #ffcccc;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            border-top: 1px solid rgba(142, 68, 173, 0.3);
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .loader .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top: 6px solid var(--primary);
+            animation: spin 1.2s linear infinite;
+            margin: 0 auto 25px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .time-scope-badges {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .time-badge {
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: rgba(142, 68, 173, 0.3);
+            color: #e0d1ff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(142, 68, 173, 0.5);
+        }
+        
+        .time-badge:hover, .time-badge.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .aspect-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .positive { background: var(--success); }
+        .neutral { background: var(--warning); }
+        .negative { background: var(--danger); }
+        
+        .aspect-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            background: rgba(40, 55, 75, 0.6);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .aspect-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .aspect-name {
+            font-weight: 600;
+            color: var(--warning);
+            font-size: 1.15rem;
+        }
+        
+        .aspect-probability {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .aspect-content {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(30, 45, 60, 0.4);
+            border-radius: 8px;
+        }
+        
+        .aspect-timing {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #bbb;
+        }
+        
+        .spiritual-summary {
+            background: linear-gradient(135deg, rgba(142, 68, 173, 0.3), rgba(44, 62, 80, 0.5));
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(142, 68, 173, 0.5);
+        }
+        
+        .spiritual-summary h4 {
+            color: var(--warning);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .model-display-box {
+            background: rgba(30, 50, 70, 0.7);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 2px solid var(--primary);
+            color: #d0e4ff;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .model-display-box i {
+            color: var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-stars"></i> حاسبة الجفر المتقدمة</h1>
+            <p>أداة متطورة تعتمد على علم الأعداد والرموز الجفرية لتقديم توقعات شاملة للدول والأشخاص عبر 14-15 محورًا مع ربط بالكواكب وتأثيراتها الزمنية</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="input-section">
+                <h2><i class="fas fa-sliders-h"></i> إعدادات الحساب</h2>
+                
+                <div class="form-group">
+                    <label for="entityType">نوع التوقع:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="countryType" name="entityType" value="country" checked>
+                            <label for="countryType">دولة</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="personType" name="entityType" value="person">
+                            <label for="personType">شخص</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entityName" id="nameLabel">اسم الدولة:</label>
+                    <input type="text" id="entityName" class="form-control" placeholder="أدخل اسم الدولة">
+                </div>
+                
+                <div class="form-group">
+                    <label>النطاق الزمني:</label>
+                    <div class="time-scope-badges">
+                        <div class="time-badge active" data-scope="general">عام</div>
+                        <div class="time-badge" data-scope="yearly">سنوي</div>
+                        <div class="time-badge" data-scope="monthly">شهري</div>
+                        <div class="time-badge" data-scope="weekly">أسبوعي</div>
+                        <div class="time-badge" data-scope="daily">يومي</div>
+                    </div>
+                </div>
+                
+                <!-- حقول إدخال ديناميكية حسب نوع التحليل -->
+                <div class="form-group" id="yearField" style="display:none;">
+                    <label for="inputYear">السنة:</label>
+                    <input type="number" id="inputYear" class="form-control" placeholder="مثال: 2025" min="1900" max="2100">
+                </div>
+                <div class="form-group" id="monthField" style="display:none;">
+                    <label for="inputMonth">الشهر:</label>
+                    <select id="inputMonth" class="form-control">
+                        <option value="">اختر الشهر</option>
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    </select>
+                </div>
+                <div class="form-group" id="weekField" style="display:none;">
+                    <label for="inputWeek">الأسبوع:</label>
+                    <input type="number" id="inputWeek" class="form-control" placeholder="رقم الأسبوع (1-5)" min="1" max="5">
+                </div>
+                
+                <div class="form-group">
+                    <label>نموذج الذكاء الاصطناعي:</label>
+                    <div class="model-display-box">
+                        <i class="fas fa-brain"></i>
+                        <span>google/gemini-2.0-flash-exp:free</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="openrouterKey">مفتاح OpenRouter (اختياري):</label>
+                    <input type="text" id="openrouterKey" class="form-control" placeholder="أدخل مفتاح OpenRouter API هنا">
+                </div>
+<button id="calculateBtn" class="btn">
+                    <i class="fas fa-calculator"></i> احسب التوقعات
+                </button>
+                
+                <div class="disclaimer">
+                    <i class="fas fa-exclamation-triangle"></i> تنويه: هذه التوقعات تعتمد على علم الأعداد والرموز الجفرية، وهي لأغراض تعليمية وترفيهية فقط.
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h2><i class="fas fa-chart-network"></i> نتائج التوقعات</h2>
+                
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <p>جارٍ تحليل البيانات الجفرية والربط الكوكبي...</p>
+                </div>
+                
+                <div id="resultsContainer">
+                    <div class="result-card">
+                        <h3><i class="fas fa-info-circle"></i> التعليمات</h3>
+                        <p>1. اختر نوع التوقع (دولة أو شخص)</p>
+                        <p>2. أدخل اسم الدولة أو الشخص</p>
+                        <p>3. اختر النطاق الزمني للتوقع</p>
+                        <p>4. اضغط على زر "احسب التوقعات"</p>
+                        <p>ستظهر هنا نتائج التوقعات الجفرية الشاملة عبر 14-15 محورًا مع تحليل طاقي وربط بالكواكب</p>
+                    </div>
+                    
+                    <div class="disclaimer">
+                        <i class="fas fa-lightbulb"></i> معلومات: علم الجفر هو أحد العلوم العربية القديمة التي تعتمد على تحويل الحروف إلى أرقام واستخراج الدلالات منها.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>حاسبة الجفر المتقدمة لتوقعات الدول والأشخاص - تم تطويره باستخدام علوم الأعداد والرموز الجفرية</p>
+            <p>جميع التوقعات تعتمد على حسابات عددية رمزية ولا تعكس بالضرورة الأحداث المستقبلية الفعلية</p>
+        </div>
+    </div>
+
+    <script>
+        // ====== ربط زر احسب التوقعات بالداتا والذكاء الاصطناعي المحلي ======
+        document.getElementById('calculateBtn').addEventListener('click', async function() {
+            const entityType = document.querySelector('input[name="entityType"]:checked').value;
+            const entityName = document.getElementById('entityName').value.trim();
+            const year = document.getElementById('inputYear').value;
+            const month = document.getElementById('inputMonth').value;
+            const week = document.getElementById('inputWeek').value;
+            const scope = selectedScope;
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            // تحقق من المدخلات المطلوبة
+            if (!entityName) {
+                alert('يرجى إدخال الاسم');
+                return;
+            }
+            if ((scope === 'yearly' || scope === 'monthly' || scope === 'weekly') && !year) {
+                alert('يرجى إدخال السنة');
+                return;
+            }
+            if ((scope === 'monthly' || scope === 'weekly') && !month) {
+                alert('يرجى اختيار الشهر');
+                return;
+            }
+            if (scope === 'weekly' && !week) {
+                alert('يرجى إدخال رقم الأسبوع');
+                return;
+            }
+
+            // تجهيز بيانات الذكاء الاصطناعي
+            const aiData = {
+                name: entityName,
+                type: entityType === 'country' ? 'دولة' : 'شخص',
+                date: year || new Date().getFullYear(),
+                analysisType: scope === 'general' ? 'عام' : (scope === 'yearly' ? 'سنوي' : (scope === 'monthly' ? 'شهري' : (scope === 'weekly' ? 'أسبوعي' : 'يومي')))
+            };
+            resultsContainer.innerHTML = '<div class="loader"><div class="spinner"></div><p>جاري التحليل عبر الذكاء الاصطناعي...</p></div>';
+            let aiSuccess = false;
+            try {
+                const response = await fetch('http://localhost:3001/api/ai_analysis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(aiData)
+                });
+                const result = await response.json();
+                if (result.result) {
+                    aiSuccess = true;
+                    resultsContainer.innerHTML = `<div class="result-card"><h3>نتيجة الذكاء الاصطناعي</h3><pre style="white-space:pre-wrap;text-align:right">${result.result}</pre></div>`;
+                } else {
+                    resultsContainer.innerHTML = `<div class="result-card"><h3>حدث خطأ: ${result.error || 'لا يوجد رد من الذكاء الاصطناعي'}</h3></div>`;
+                }
+            } catch (e) {
+                aiSuccess = false;
+                resultsContainer.innerHTML = `<div class="result-card"><h3>فشل الاتصال بخادم الذكاء الاصطناعي. سيتم عرض التوقعات المحلية.</h3></div>`;
+            }
+            // fallback: عرض الداتا المحلية إذا فشل الذكاء الاصطناعي
+            if (!aiSuccess) {
+                // احسب قيمة الجمل
+                const jummal = calculateJummal(entityName);
+                let jNum = jummal % 9;
+                if (jNum === 0) jNum = 9;
+                if (scope in gufrPredictions && !(jNum in gufrPredictions[scope])) {
+                    jNum = ((jummal % 3) || 3).toString();
+                } else {
+                    jNum = jNum.toString();
+                }
+                let predictions;
+                if (entityType === 'country') {
+                    predictions = gufrPredictions[scope] && gufrPredictions[scope][jNum];
+                } else {
+                    predictions = gufrPersonPredictions[scope] && gufrPersonPredictions[scope][jNum];
+                }
+                if (!predictions) {
+                    resultsContainer.innerHTML += `<div class='result-card'><h3>لا توجد بيانات توقعات متوفرة لهذا الرقم (${jNum}) في هذا النطاق الزمني.</h3></div>`;
+                    return;
+                }
+                let html = `<div class='result-card'>`;
+                html += `<h3><i class='fas fa-magic'></i> التوقعات الجفرية (${entityType === 'country' ? 'دولة' : 'شخص'})</h3>`;
+                html += `<p><strong>الاسم:</strong> ${entityName}</p>`;
+                if (year) html += `<p><strong>السنة:</strong> ${year}</p>`;
+                if (month) html += `<p><strong>الشهر:</strong> ${document.querySelector(`#inputMonth option[value='${month}']`).textContent}</p>`;
+                if (week) html += `<p><strong>الأسبوع:</strong> ${week}</p>`;
+                html += `<p><strong>قيمة الجُمّل:</strong> ${jummal}</p>`;
+                html += `<hr>`;
+                Object.keys(predictions).forEach(key => {
+                    const p = predictions[key];
+                    html += `<div class='aspect-item'>`;
+                    html += `<div class='aspect-header'><span class='aspect-name'><i class='fas fa-${getIconForKey(key)}'></i> ${key}</span><span class='aspect-probability'>${p.probability || ''}%</span></div>`;
+                    html += `<div class='aspect-content'>${p.description || ''}</div>`;
+                    if (p.opportunity) html += `<div><span style='color:#27ae60'><i class='fas fa-arrow-up'></i> فرصة:</span> ${p.opportunity}</div>`;
+                    if (p.warning) html += `<div><span style='color:#e74c3c'><i class='fas fa-exclamation-triangle'></i> تحذير:</span> ${p.warning}</div>`;
+                    if (p.planet) html += `<div><span style='color:#f39c12'><i class='fas fa-globe'></i> الكوكب:</span> ${p.planet}</div>`;
+                    if (p.timing) html += `<div><span style='color:#2980b9'><i class='fas fa-clock'></i> التوقيت:</span> ${p.timing}</div>`;
+                    html += `</div>`;
+                });
+                html += `</div>`;
+                resultsContainer.innerHTML += html;
+            }
+        });
+
+        // ====== منطق إظهار حقول الإدخال حسب نوع التحليل ======
+        const timeBadges = document.querySelectorAll('.time-badge');
+        const yearField = document.getElementById('yearField');
+        const monthField = document.getElementById('monthField');
+        const weekField = document.getElementById('weekField');
+        let selectedScope = 'general';
+
+        function updateInputFields() {
+            yearField.style.display = (selectedScope === 'yearly' || selectedScope === 'monthly' || selectedScope === 'weekly') ? 'block' : 'none';
+            monthField.style.display = (selectedScope === 'monthly' || selectedScope === 'weekly') ? 'block' : 'none';
+            weekField.style.display = (selectedScope === 'weekly') ? 'block' : 'none';
+        }
+
+        timeBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                timeBadges.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedScope = this.dataset.scope;
+                updateInputFields();
+            });
+        });
+        // بداية: إظهار الحقول الصحيحة عند التحميل
+        updateInputFields();
+
+        // ====== دالة حساب الجُمّل البسيطة (تحويل نص عربي إلى قيمة عددية) ======
+        function calculateJummal(str) {
+            const abjad = {
+                'ا':1,'ب':2,'ج':3,'د':4,'ه':5,'و':6,'ز':7,'ح':8,'ط':9,'ي':10,'ك':20,'ل':30,'م':40,'ن':50,'س':60,'ع':70,'ف':80,'ص':90,
+                'ق':100,'ر':200,'ش':300,'ت':400,'ث':500,'خ':600,'ذ':700,'ض':800,'ظ':900,'غ':1000
+            };
+            let sum = 0;
+            for (let char of str.replace(/\s/g, '')) {
+                if (abjad[char]) sum += abjad[char];
+            }
+            return sum;
+        }
+        // يمكن استخدام calculateJummal("سمر عفاف") أو أي نص آخر لحساب قيمة الجمل
+
+        // بيانات التوقعات الكاملة مع المحاور المطلوبة
+        const gufrPredictions = {
+            general: {
+                "1": {
+                    "الحاكم/النظام السياسي": {
+                        description: "ضغوط داخلية مع مقاومة مستمرة للتغيير، لكنه يحتفظ بالسلطة عبر تحالفات قصيرة الأجل.",
+                        probability: 75,
+                        opportunity: "فرصة لتعزيز التحالفات مع القوى الإصلاحية",
+                        warning: "خطر الانقسامات الداخلية والصراعات على السلطة",
+                        planet: "المريخ",
+                        timing: "خلال الربع الثاني من العام"
+                    },
+                    "الشعب والتركيبة السكانية": {
+                        description: "حماس أولي للإصلاح يضعف بسبب بطء النتائج، وتظهر موجات احتجاج متقطعة.",
+                        probability: 65,
+                        opportunity: "زيادة الوعي السياسي والاجتماعي بين الشباب",
+                        warning: "احتمال تصاعد الاحتجاجات إذا لم تتحسن الأوضاع",
+                        planet: "القمر",
+                        timing: "طوال العام مع ذروة في الربيع"
+                    },
+                    "الاقتصاد والمال العام": {
+                        description: "فرص استثمارية ناشئة لكن تعوقها بيروقراطية مكثفة؛ نمو محدود في الناتج القومي.",
+                        probability: 70,
+                        opportunity: "استثمارات أجنبية في قطاعات التكنولوجيا",
+                        warning: "ارتفاع معدلات التضخم والبطالة",
+                        planet: "الزهرة",
+                        timing: "النصف الثاني من العام"
+                    },
+                    "السمعة والعلاقات الدولية": {
+                        description: "صورة دولية حيادية تميل إلى التحسن عند توقيع اتفاقات تجارية جديدة.",
+                        probability: 80,
+                        opportunity: "دور ريادي في مبادرات السلام الإقليمية",
+                        warning: "تقلب العلاقات مع القوى الكبرى",
+                        planet: "المشتري",
+                        timing: "ربع العام الأخير"
+                    },
+                    "الجيش والقوات المسلحة": {
+                        description: "يحافظ على ولائه للحاكم دون تدخل مباشر في الشؤون السياسية.",
+                        probability: 85,
+                        opportunity: "تحديث المعدات والتدريبات العسكرية",
+                        warning: "تدخل غير مباشر في السياسة الداخلية",
+                        planet: "المريخ",
+                        timing: "طوال العام"
+                    },
+                    "الشرطة والأمن الداخلي": {
+                        description: "تشديد أمني في المدن الكبرى مع زيادة الرقابة.",
+                        probability: 75,
+                        opportunity: "إصلاحات في جهاز الشرطة",
+                        warning: "احتمال تجاوزات في التعامل مع الاحتجاجات",
+                        planet: "زحل",
+                        timing: "ربع العام الأول"
+                    },
+                    "البنية التحتية والنقل": {
+                        description: "توسيع شبكات القطارات لكن التنفيذ بطيء بسبب التحديات المالية.",
+                        probability: 60,
+                        opportunity: "شراكات مع شركات عالمية في مجال البنية التحتية",
+                        warning: "تأخر المشاريع الكبرى",
+                        planet: "عطارد",
+                        timing: "على مدار العام"
+                    },
+                    "الإنترنت والاتصالات": {
+                        description: "تحسين سرعة الإنترنت بنسبة 15% مع قيود محتوى معتدلة.",
+                        probability: 70,
+                        opportunity: "تحول رقمي في الخدمات الحكومية",
+                        warning: "قيود على حرية التعبير عبر الإنترنت",
+                        planet: "أورانوس",
+                        timing: "خلال الأشهر الثلاثة القادمة"
+                    },
+                    "الديون والالتزامات": {
+                        description: "زيادة طفيفة مع خطط إعادة جدولة للديون الخارجية.",
+                        probability: 65,
+                        opportunity: "إعادة هيكلة الديون بفوائد منخفضة",
+                        warning: "تراكم الديون وزيادة الأعباء المالية",
+                        planet: "زحل",
+                        timing: "النصف الثاني من العام"
+                    },
+                    "الأزمات والكوارث الطبيعية": {
+                        description: "تذبذب سياسي مفاجئ في منتصف العام يعقبه استقرار نسبي.",
+                        probability: 55,
+                        opportunity: "تحسين أنظمة الإنذار المبكر",
+                        warning: "كوارث طبيعية في المناطق الساحلية",
+                        planet: "نبتون",
+                        timing: "منتصف العام"
+                    },
+                    "العقبات والتحديات الهيكلية": {
+                        description: "انقسام بين النخب التقليدية وجيل الإصلاح، ما يطيل أمد القرارات.",
+                        probability: 80,
+                        opportunity: "حوار وطني شامل للمصالحة",
+                        warning: "استمرار الجمود السياسي",
+                        planet: "زحل",
+                        timing: "طوال العام"
+                    },
+                    "النجاحات والفرص": {
+                        description: "إطلاق مشاريع بنية تحتية تقنية واتفاقيات تجارية دولية.",
+                        probability: 75,
+                        opportunity: "دخول أسواق اقتصادية جديدة",
+                        warning: "تأثر المشاريع بالتغيرات السياسية",
+                        planet: "المشتري",
+                        timing: "ربع العام الثالث"
+                    },
+                    "القوة الخفية/التأثير الروحي": {
+                        description: "قوة تقليدية مع إمكانية تحول تدريجي نحو الحداثة في الخطاب الديني.",
+                        probability: 70,
+                        opportunity: "حوار بين الأديان وتعزيز التسامح",
+                        warning: "استغلال الدين في الصراعات السياسية",
+                        planet: "نبتون",
+                        timing: "على مدار العام"
+                    },
+                    "العلاقات الخارجية والعلاقة مع الدول": {
+                        description: "تعاون اقتصادي مع دول الجوار، مع توترات سياسية محدودة.",
+                        probability: 80,
+                        opportunity: "شراكات استراتيجية مع دول صاعدة",
+                        warning: "خلافات حدودية مع جيران",
+                        planet: "الزهرة",
+                        timing: "ربع العام الثاني"
+                    },
+                    "الحروب والكوارث": {
+                        description: "مخاطر بيئية محدودة تتعلق بالجفاف والتصحر.",
+                        probability: 50,
+                        opportunity: "استثمار في الطاقة المتجددة",
+                        warning: "صراعات إقليمية قد تؤثر على الاستقرار",
+                        planet: "بلوتو",
+                        timing: "نهاية العام"
+                    }
+                },
+                "2": {
+                    // بيانات مماثلة للرقم 2
+                },
+                "3": {
+                    // بيانات مماثلة للرقم 3
+                }
+            },
+            yearly: {
+                "1": {
+                    "الحاكم/النظام السياسي": {
+                        description: "سنة من التحديات السياسية تتطلب حكمة في اتخاذ القرارات.",
+                        probability: 70,
+                        opportunity: "إصلاحات دستورية",
+                        warning: "احتمال استقالات في الحكومة",
+                        planet: "زحل",
+                        timing: "النصف الأول من العام"
+                    },
+                    // بقية المحاور بنفس الهيكل
+                },
+                // الأرقام الأخرى
+            },
+            // نطاقات زمنية أخرى
+        };
+
+        // بيانات توقعات الأشخاص مع المحاور المطلوبة
+        const gufrPersonPredictions = {
+            general: {
+                "1": {
+                    "الصفات الجسدية": {
+                        description: "طول متوسط وبنية رياضية؛ نظرة حادة تعكس ثقة بالنفس.",
+                        probability: 85,
+                        opportunity: "قدرة على تحمل الضغوط",
+                        warning: "إجهاد عضلي عند الإفراط في العمل",
+                        planet: "الشمس",
+                        timing: "طوال العام"
+                    },
+                    "المال والدخل": {
+                        description: "مدخول يرتفع عبر مبادرات فردية؛ مخاطر مضاربة محتملة.",
+                        probability: 75,
+                        opportunity: "استثمارات عقارية ناجحة",
+                        warning: "خسائر في المضاربات قصيرة الأجل",
+                        planet: "الزهرة",
+                        timing: "ربع العام الثاني"
+                    },
+                    "المهنة/العمل": {
+                        description: "أدوار قيادية أو ريادة أعمال مع فرص للتطور المهني.",
+                        probability: 80,
+                        opportunity: "ترقية أو منصب جديد",
+                        warning: "منافسة شرسة في مجال العمل",
+                        planet: "المشتري",
+                        timing: "نهاية العام"
+                    },
+                    "الطموح والإنجاز": {
+                        description: "سعيٌ واضح لترك بصمة شخصية وتحقيق أهداف كبيرة.",
+                        probability: 90,
+                        opportunity: "إطلاق مشروع شخصي ناجح",
+                        warning: "ضغط نفسي بسبب الطموحات الكبيرة",
+                        planet: "المريخ",
+                        timing: "طوال العام"
+                    },
+                    "الصحة والطاقة الحيوية": {
+                        description: "نشاط بدني جيد مع قابلية لإجهاد عضلي عند الإرهاق.",
+                        probability: 70,
+                        opportunity: "تحسن في اللياقة البدنية",
+                        warning: "إهمال الفحوصات الدورية",
+                        planet: "القمر",
+                        timing: "ربع العام الأول"
+                    },
+                    "العاطفة والعلاقات الحميمة": {
+                        description: "اندفاع ووضوح نوايا؛ يُفضِّل السيطرة في العلاقات.",
+                        probability: 65,
+                        opportunity: "علاقة عاطفية جادة",
+                        warning: "صراعات مع الشريك",
+                        planet: "الزهرة",
+                        timing: "منتصف العام"
+                    },
+                    "الأسرة والجذور": {
+                        description: "دور محوري في اتخاذ القرارات العائلية ومساعدة الأقارب.",
+                        probability: 80,
+                        opportunity: "تقارب مع أفراد الأسرة",
+                        warning: "خلافات حول الميراث",
+                        planet: "القمر",
+                        timing: "ربع العام الأخير"
+                    },
+                    "الأصدقاء والشبكات الاجتماعية": {
+                        description: "دائرة محدودة لكنها وفية مع علاقات اجتماعية مؤثرة.",
+                        probability: 75,
+                        opportunity: "صداقات جديدة مؤثرة",
+                        warning: "خيانة من صديق مقرب",
+                        planet: "المشتري",
+                        timing: "ربع العام الثالث"
+                    },
+                    "السمعة والصورة العامة": {
+                        description: "معروف بالجرأة والاعتماد على الذات والقيادية.",
+                        probability: 85,
+                        opportunity: "تكريم أو جائزة مهنية",
+                        warning: "انتقادات من المنافسين",
+                        planet: "الشمس",
+                        timing: "نهاية العام"
+                    },
+                    "التفكير واتخاذ القرار": {
+                        description: "تحليلي سريع يركز على النتائج واتخاذ قرارات حاسمة.",
+                        probability: 90,
+                        opportunity: "قرارات مصيرية تغير المسار المهني",
+                        warning: "تسرع في بعض القرارات المهمة",
+                        planet: "عطارد",
+                        timing: "طوال العام"
+                    },
+                    "الأسرار وما هو مخفي": {
+                        description: "يميل لكتمان خططه الاستراتيجية ولا يبوح بأسراره بسهولة.",
+                        probability: 70,
+                        opportunity: "الحفاظ على خصوصية المشاريع",
+                        warning: "انكشاف بعض الأسرار المهنية",
+                        planet: "بلوتو",
+                        timing: "منتصف العام"
+                    },
+                    "الأزمات/العقبات المحتملة": {
+                        description: "صدمات مالية قصيرة تستحثه للتوسع والبحث عن فرص جديدة.",
+                        probability: 60,
+                        opportunity: "تغيير إيجابي في المسار المهني",
+                        warning: "مشكلات قانونية محتملة",
+                        planet: "زحل",
+                        timing: "ربع العام الأول"
+                    },
+                    "الروحانية والرسائل الباطنية": {
+                        description: "يميل للتأمل القصير لتعزيز التركيز والاتزان النفسي.",
+                        probability: 65,
+                        opportunity: "تجارب روحية عميقة",
+                        warning: "إهمال الجانب الروحي",
+                        planet: "نبتون",
+                        timing: "ربع العام الأخير"
+                    },
+                    "الشهرة والبشارات": {
+                        description: "إطلاق مشاريع رائدة وتحقيق نجاحات غير متوقعة تجلب الشهرة.",
+                        probability: 75,
+                        opportunity: "ظهور إعلامي مؤثر",
+                        warning: "حسد وانتقادات غير مبررة",
+                        planet: "المشتري",
+                        timing: "نهاية العام"
+                    }
+                },
+                "2": {
+                    // بيانات مماثلة للرقم 2
+                },
+                "3": {
+                    // بيانات مماثلة للرقم 3
+                }
+            },
+            // نطاقات زمنية أخرى
+        };
+
+        // الكواكب المرتبطة بالأرقام
+        const planets = {
+            1: { name: "الشمس", effect: "القيادة، النفوذ، القوة، الذات، الحيوية" },
+            2: { name: "القمر", effect: "العواطف، الحدس، الأسرة، التقلبات" },
+            3: { name: "المشتري", effect: "الحظ، التوسع، الحكمة، الازدهار" },
+            4: { name: "الزهرة", effect: "الحب، الجمال، الفن، الانسجام" },
+            5: { name: "عطارد", effect: "التواصل، الذكاء، التجارة، المرونة" },
+            6: { name: "زحل", effect: "الانضباط، المسؤولية، التحديات، البناء" },
+            7: { name: "المريخ", effect: "الطاقة، القتال، الشجاعة، الاندفاع" },
+            8: { name: "أورانوس", effect: "التغيير المفاجئ، الابتكار، التمرد" },
+            9: { name: "نبتون", effect: "الحدس، الروحانيات، الفن، الوهم" }
+        };
+
+        // طاقة كل رقم جفري من 1 إلى 9
+        const gufrNumberEnergies = {
+            1: "بدايات جديدة، قيادة، شحن ذاتي مرتفع",
+            2: "تناغم، تعاون، حساسية، توازن",
+            3: "إبداع، تواصل، انتشار، تفاؤل",
+            4: "استقرار، بناء، انضباط، تنظيم",
+            5: "حرية، مغامرة، تغيير، مرونة",
+            6: "مسؤولية، رعاية، جمال، انسجام",
+            7: "حدس، حكمة، تحليل، بحث",
+            8: "سلطة، إنجاز مادي، كفاءة، قوة",
+            9: "إنسانية، عطاء، نهاية دورة، حكمة"
+        };
+
+        // تحويل الاسم إلى رقم جفري
+        function calculateGufrNumber(name) {
+            const abjadValues = {
+                'أ': 1, 'ا': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'و': 6, 'ز': 7, 'ح': 8, 'ط': 9,
+                'ي': 10, 'ك': 20, 'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90,
+                'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
+                'ى': 10, 'ة': 5
+            };
+            
+            let total = 0;
+            for (let char of name) {
+                if (abjadValues[char]) {
+                    total += abjadValues[char];
+                }
+            }
+            
+            // حساب الرقم الجفري (باقي القسمة على 9)
+            const gufrNumber = total % 9 || 9;
+            return {
+                total: total,
+                gufrNumber: gufrNumber
+            };
+        }
+
+        // DOM Elements
+        const entityTypeRadios = document.querySelectorAll('input[name="entityType"]');
+        const nameLabel = document.getElementById('nameLabel');
+        const entityNameInput = document.getElementById('entityName');
+        const timeScopeBadges = document.querySelectorAll('.time-badge');
+        const dateField = document.getElementById('dateField');
+        // const predictionDateInput = document.getElementById('predictionDate');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const loader = document.querySelector('.loader');
+        const resultsContainer = document.getElementById('resultsContainer');
+        
+        // Event Listeners
+        entityTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                nameLabel.textContent = this.value === 'country' ? 'اسم الدولة:' : 'اسم الشخص:';
+                entityNameInput.placeholder = this.value === 'country' ? 
+                    'أدخل اسم الدولة' : 'أدخل الاسم الكامل للشخص';
+            });
+        });
+        
+        timeScopeBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                // Remove active class from all badges
+                timeScopeBadges.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked badge
+                this.classList.add('active');
+                
+                // Show/hide date field
+                if (dateField) {
+                    if (this.dataset.scope === 'general') {
+                        dateField.style.display = 'none';
+                    } else {
+                        dateField.style.display = 'block';
+                    }
+                }
+            });
+        });
+        
+        calculateBtn.addEventListener('click', calculatePredictions);
+        
+        // Main Calculation Function
+        function calculatePredictions() {
+            const entityType = document.querySelector('input[name="entityType"]:checked').value;
+            const entityName = entityNameInput.value.trim();
+            const timeScope = document.querySelector('.time-badge.active').dataset.scope;
+            const year = document.getElementById('inputYear') ? document.getElementById('inputYear').value : '';
+            const month = document.getElementById('inputMonth') ? document.getElementById('inputMonth').value : '';
+            const week = document.getElementById('inputWeek') ? document.getElementById('inputWeek').value : '';
+            let date = null;
+            if (timeScope === 'yearly') {
+                date = year ? new Date(year, 0, 1) : null;
+            } else if (timeScope === 'monthly') {
+                date = (year && month) ? new Date(year, month - 1, 1) : null;
+            } else if (timeScope === 'weekly') {
+                date = (year && month && week) ? { year, month, week } : null;
+            } // daily: يمكن إضافة معالجة لاحقاً إذا لزم
+
+            
+            if (!entityName) {
+                alert('الرجاء إدخال اسم ' + (entityType === 'country' ? 'الدولة' : 'الشخص'));
+                return;
+            }
+            
+            if (timeScope !== 'general' && !date) {
+                alert('الرجاء اختيار تاريخ صحيح');
+                return;
+            }
+            
+            // Show loader
+            loader.style.display = 'block';
+            resultsContainer.innerHTML = '';
+
+            // جمع بيانات الذكاء الاصطناعي من الواجهة
+            const model = document.getElementById('modelSelect') ? document.getElementById('modelSelect').value : '';
+            const apiKey = document.getElementById('openrouterKey') ? document.getElementById('openrouterKey').value.trim() : '';
+
+            // إرسال الطلب للسيرفر مع النموذج والمفتاح
+            fetch('http://localhost:3001/api/ai_analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: entityName,
+                    type: entityType,
+                    date: year || new Date().getFullYear(),
+                    analysisType: timeScope === 'general' ? 'عام' : (timeScope === 'yearly' ? 'سنوي' : (timeScope === 'monthly' ? 'شهري' : (timeScope === 'weekly' ? 'أسبوعي' : 'يومي'))),
+                    model,
+                    apiKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result) {
+                    resultsContainer.innerHTML = `<pre>${data.result}</pre>`;
+                } else {
+                    resultsContainer.innerHTML = `<span style='color:red'>فشل التحليل: ${data.error || 'خطأ غير معروف'}</span>`;
+                }
+                loader.style.display = 'none';
+            })
+            .catch(err => {
+                resultsContainer.innerHTML = `<span style='color:red'>فشل الاتصال بالسيرفر أو API: ${err.message}</span>`;
+                loader.style.display = 'none';
+            });
+
+            // إلغاء المعالجة المحلية إذا كان الذكاء الاصطناعي مستخدم
+            if (model) return;
+
+            // Simulate processing delay
+            setTimeout(() => {
+                // Calculate gufr number
+                const { total, gufrNumber } = calculateGufrNumber(entityName);
+                
+                // Get predictions based on type and time scope
+                let predictions;
+                let analysis = {};
+                
+                if (entityType === 'country') {
+                    predictions = gufrPredictions[timeScope][gufrNumber];
+                    
+                    // Generate analysis for country
+                    if (timeScope === 'general') {
+                        for (const [key, value] of Object.entries(predictions)) {
+                            analysis[key] = value;
+                        }
+                    } else {
+                        analysis = predictions;
+                    }
+                } else {
+                    predictions = gufrPersonPredictions[timeScope][gufrNumber];
+                    
+                    // Generate analysis for person
+                    if (timeScope === 'general') {
+                        for (const [key, value] of Object.entries(predictions)) {
+                            analysis[key] = value;
+                        }
+                    } else {
+                        analysis = predictions;
+                    }
+                }
+                
+                // Get planet info
+                const planet = planets[gufrNumber];
+                
+                // Display results
+                displayResults(entityName, entityType, timeScope, date, total, gufrNumber, analysis, planet);
+                
+                // Hide loader
+                loader.style.display = 'none';
+            }, 1800);
+        }
+        
+        // Display Results Function
+        function displayResults(name, type, scope, date, total, gufrNumber, predictions, planet) {
+            const entityTypeName = type === 'country' ? 'دولة' : 'شخص';
+            const scopeNames = {
+                'general': 'عام',
+                'yearly': 'سنوي',
+                'monthly': 'شهري',
+                'weekly': 'أسبوعي',
+                'daily': 'يومي'
+            };
+            
+            let dateInfo = '';
+            if (date) {
+                dateInfo = `<p><strong>تاريخ التوقع:</strong> ${date.toLocaleDateString('ar-EG')}</p>`;
+            }
+            
+            // Generate scope badge
+            const scopeBadge = `<span class="energy-badge energy-${gufrNumber}">${scopeNames[scope]}</span>`;
+            
+            let resultsHTML = `
+                <div class="result-card">
+                    <h3><i class="fas fa-chart-pie"></i> معلومات الحساب</h3>
+                    <p><strong>الاسم:</strong> ${name}</p>
+                    <p><strong>النوع:</strong> ${entityTypeName}</p>
+                    <p><strong>نطاق التوقع:</strong> ${scopeBadge}</p>
+                    ${dateInfo}
+                    <p><strong>الرقم الكلي:</strong> ${total}</p>
+                    <p><strong>الرقم الجفري:</strong> ${gufrNumber}</p>
+                    <p><strong>طاقة الرقم:</strong> <span class="energy-badge energy-${gufrNumber}">${gufrNumberEnergies[gufrNumber]}</span></p>
+                </div>
+                
+                <div class="planet-card">
+                    <div class="planet-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="planet-info">
+                        <h4>الكوكب المؤثر: ${planet.name}</h4>
+                        <p>${planet.effect}</p>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h3><i class="fas fa-crystal-ball"></i> توقعات ${scopeNames[scope]} ${type === 'country' ? 'للدولة' : 'للشخص'}</h3>
+            `;
+            
+            if (typeof predictions === 'object') {
+                for (const [aspect, data] of Object.entries(predictions)) {
+                    resultsHTML += `
+                        <div class="aspect-item">
+                            <div class="aspect-header">
+                                <div class="aspect-name">${aspect}</div>
+                                <div class="aspect-probability">${data.probability}%</div>
+                            </div>
+                            <div class="aspect-content">
+                                <p>${data.description}</p>
+                                <div class="probability-bar">
+                                    <div class="probability-fill" style="width: ${data.probability}%"></div>
+                                </div>
+                            </div>
+                            <div class="aspect-timing">
+                                <div><span class="aspect-indicator positive"></span> فرصة: ${data.opportunity}</div>
+                                <div><span class="aspect-indicator negative"></span> تحذير: ${data.warning}</div>
+                            </div>
+                            <div class="aspect-timing">
+                                <div><i class="fas fa-globe"></i> الكوكب: ${data.planet}</div>
+                                <div><i class="fas fa-clock"></i> التوقيت: ${data.timing}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                resultsHTML += `<p>${predictions}</p>`;
+            }
+            
+            // Add spiritual summary
+            resultsHTML += `
+                <div class="spiritual-summary">
+                    <h4><i class="fas fa-star"></i> ملخص طاقي وتوصيات روحانية</h4>
+                    <p>الرقم الجفري ${gufrNumber} يحمل طاقة ${gufrNumberEnergies[gufrNumber]}، وهو متوافق مع كوكب ${planet.name} الذي يؤثر على ${planet.effect}.</p>
+                    <p>نوصي بـ:</p>
+                    <ul>
+                        <li>ممارسة التأمل اليومي لتعزيز التوازن الطاقي</li>
+                        <li>التركيز على الفرص المذكورة في التحليل وتجنب المخاطر المحتملة</li>
+                        <li>استغلال التوقيتات المحددة لتحقيق أفضل النتائج</li>
+                        <li>الاهتمام بالجانب الروحي لتحقيق التوازن في الحياة</li>
+                    </ul>
+                </div>
+            `;
+            
+            resultsHTML += `</div>`;
+            
+            resultsContainer.innerHTML = resultsHTML;
+            
+            // Animate probability bars
+            setTimeout(() => {
+                document.querySelectorAll('.probability-fill').forEach(fill => {
+                    fill.style.width = fill.style.width;
+                });
+            }, 100);
+        }
+        
+        // Helper functions
+        function getIconForKey(key) {
+            const icons = {
+                'الحاكم': 'crown',
+                'الشعب': 'users',
+                'الاقتصاد': 'money-bill-wave',
+                'السمعة الدولية': 'globe',
+                'الجيش': 'shield-alt',
+                'الشرطة': 'user-shield',
+                'البنية التحتية': 'road',
+                'الاتصالات': 'wifi',
+                'الديون': 'file-invoice-dollar',
+                'الأزمات': 'exclamation-triangle',
+                'العقبات': 'road',
+                'النجاحات': 'trophy',
+                'التأثير الروحي': 'moon-stars',
+                'العلاقات الخارجية': 'handshake',
+                'الكوارث': 'meteor',
+                'الصفات الجسدية': 'user',
+                'المال والدخل': 'money-bill',
+                'المهنة/العمل': 'briefcase',
+                'الطموح والإنجاز': 'flag',
+                'الصحة والطاقة الحيوية': 'heartbeat',
+                'العاطفة والعلاقات الحميمة': 'heart',
+                'الأسرة والجذور': 'home',
+                'الأصدقاء والشبكات الاجتماعية': 'user-friends',
+                'السمعة والصورة العامة': 'id-card',
+                'التفكير واتخاذ القرار': 'brain',
+                'الأسرار وما هو مخفي': 'lock',
+                'الأزمات/العقبات المحتملة': 'exclamation-circle',
+                'الروحانية والرسائل الباطنية': 'pray',
+                'الشهرة والبشارات': 'star'
+            };
+            
+            return icons[key] || 'info-circle';
+        }
+    </script>
+</body>
+</html>

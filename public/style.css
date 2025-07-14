@@ -1,0 +1,330 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, #ffd700, #ffed4e);
+    border-radius: 2px;
+}
+
+.main-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.input-section {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 35px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 0;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #ffd700;
+    font-size: 1.1rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.input-field:focus {
+    outline: none;
+    box-shadow: 0 0 25px rgba(255,215,0,0.6);
+    transform: translateY(-3px);
+}
+
+.analyze-btn {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    color: #333;
+    border: none;
+    padding: 18px 50px;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+}
+
+.analyze-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(255,215,0,0.5);
+}
+
+.results-section-new {
+    display: none;
+    margin-top: 40px;
+}
+
+.result-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.axes-container {
+    background: rgba(0,0,0,0.2);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.axes-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #ffd700;
+    margin-bottom: 30px;
+}
+
+.axis-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-left: 5px solid #ffd700;
+    transition: all 0.3s ease;
+}
+
+.axis-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.axis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.axis-title-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.axis-probability {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffed4e;
+}
+
+.axis-content p {
+    margin-bottom: 10px;
+}
+
+.summary-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.result-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: all 0.3s ease;
+    min-height: 300px;
+}
+
+.result-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.card-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffd700;
+    border-bottom: 2px solid rgba(255,215,0,0.4);
+    padding-bottom: 12px;
+}
+
+.card-content {
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.number-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffed4e;
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+.element-badge {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.fire { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); }
+.water { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+.earth { background: linear-gradient(45deg, #8b4513, #a0522d); }
+.air { background: linear-gradient(45deg, #87ceeb, #98d8e8); }
+
+.planet-info {
+    background: rgba(255,215,0,0.15);
+    border-radius: 15px;
+    padding: 18px;
+    margin: 15px 0;
+    border-left: 5px solid #ffd700;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.warning {
+    background: rgba(255,0,0,0.15);
+    border-left-color: #ff4444;
+}
+
+.blessing {
+    background: rgba(0,255,0,0.15);
+    border-left-color: #44ff44;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.spinner {
+    border: 5px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top: 5px solid #ffd700;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}
+
+.frequency-badge {
+    background: rgba(255,215,0,0.2);
+    padding: 4px 12px;
+    margin: 3px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .input-section {
+        padding: 25px;
+    }
+    
+    .result-card-grid, .summary-container {
+        grid-template-columns: 1fr;
+    }
+}
