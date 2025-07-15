@@ -531,6 +531,17 @@
     </style>
 </head>
 <body>
+    <!-- Error Message Container -->
+    <div id="error-message"></div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>جاري تحميل البيانات...</p>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1><i class="fas fa-stars"></i> حاسبة الجفر المتقدمة</h1>
@@ -615,7 +626,28 @@
                 </button>
                 
                 <div class="disclaimer">
-                    <i class="fas fa-exclamation-triangle"></i> تنويه: هذه التوقعات تعتمد على علم الأعداد والرموز الجفرية، وهي لأغراض تعليمية وترفيهية فقط.
+                    <p><i class="fas fa-info-circle"></i> ملاحظة: النتائج المقدمة هي توقعات بناءً على علوم الجفر التقليدية وليست حقائق مؤكدة.</p>
+                </div>
+                
+                <div class="examples-section">
+                    <h3><i class="fas fa-lightbulb"></i> أمثلة توضيحية</h3>
+                    <div class="examples-grid">
+                        <div class="example-card" data-example="saudi">
+                            <h4>المملكة العربية السعودية</h4>
+                            <p>تحليل شامل للوضع الحالي والمستقبلي</p>
+                            <button class="btn-example">عرض المثال</button>
+                        </div>
+                        <div class="example-card" data-example="uae">
+                            <h4>دولة الإمارات العربية المتحدة</h4>
+                            <p>توقعات اقتصادية وسياسية</p>
+                            <button class="btn-example">عرض المثال</button>
+                        </div>
+                        <div class="example-card" data-example="person">
+                            <h4>تحليل شخصي</h4>
+                            <p>مثال لتحليل شخصي شامل</p>
+                            <button class="btn-example">عرض المثال</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -1156,12 +1188,30 @@
         
         // Main Calculation Function
         function calculatePredictions() {
-            const entityType = document.querySelector('input[name="entityType"]:checked').value;
-            const entityName = entityNameInput.value.trim();
-            const timeScope = document.querySelector('.time-badge.active').dataset.scope;
-            const year = document.getElementById('inputYear') ? document.getElementById('inputYear').value : '';
-            const month = document.getElementById('inputMonth') ? document.getElementById('inputMonth').value : '';
-            const week = document.getElementById('inputWeek') ? document.getElementById('inputWeek').value : '';
+            // Basic input validation
+            const entityTypeRadio = document.querySelector('input[name="entityType"]:checked');
+            if (!entityTypeRadio) {
+                alert('الرجاء اختيار نوع التحليل (دولة أو شخص)');
+                return;
+            }
+            
+            const entityType = entityTypeRadio.value;
+            const entityName = entityNameInput ? entityNameInput.value.trim() : '';
+            
+            const activeTimeBadge = document.querySelector('.time-badge.active');
+            if (!activeTimeBadge) {
+                alert('الرجاء اختيار نطاق زمني للتحليل');
+                return;
+            }
+            
+            const timeScope = activeTimeBadge.dataset.scope;
+            const yearInput = document.getElementById('inputYear');
+            const monthInput = document.getElementById('inputMonth');
+            const weekInput = document.getElementById('inputWeek');
+            
+            const year = yearInput ? yearInput.value : '';
+            const month = monthInput ? monthInput.value : '';
+            const week = weekInput ? weekInput.value : '';
             let date = null;
             if (timeScope === 'yearly') {
                 date = year ? new Date(year, 0, 1) : null;
@@ -1191,7 +1241,11 @@
             const apiKey = document.getElementById('openrouterKey') ? document.getElementById('openrouterKey').value.trim() : '';
 
             // إرسال الطلب للسيرفر مع النموذج والمفتاح
-            fetch('http://localhost:3001/api/ai_analysis', {
+            const apiUrl = window.location.hostname === 'localhost' 
+                ? 'http://localhost:8888/.netlify/functions/ai_analysis' 
+                : '/.netlify/functions/ai_analysis';
+                
+            fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1213,7 +1267,13 @@
                 loader.style.display = 'none';
             })
             .catch(err => {
-                resultsContainer.innerHTML = `<span style='color:red'>فشل الاتصال بالسيرفر أو API: ${err.message}</span>`;
+                console.error('API Error:', err);
+                resultsContainer.innerHTML = `
+                    <div style='color:red; text-align:center; padding: 20px;'>
+                        <h3>حدث خطأ في الاتصال بالخادم</h3>
+                        <p>${err.message || 'الرجاء التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى'}</p>
+                        <p>إذا استمرت المشكلة، يرجى التحقق من إعدادات المفتاح API</p>
+                    </div>`;
                 loader.style.display = 'none';
             });
 

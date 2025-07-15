@@ -1,0 +1,12 @@
+# Netlify configuration file
+
+[build]
+  # Directory to deploy.
+  publish = "public/"
+  # Directory where the serverless functions are located.
+  functions = "netlify/functions/"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

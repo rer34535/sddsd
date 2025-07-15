@@ -2,37 +2,74 @@ document.addEventListener('DOMContentLoaded', createStars);
 
 // --- CORE ANALYSIS LOGIC ---
 
+// Show loading state with message
+function showLoading(message) {
+    const loadingElement = document.getElementById('loading');
+    loadingElement.innerHTML = `
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>${message}</p>
+        </div>
+    `;
+    loadingElement.style.display = 'block';
+}
+
+// Show error message to user
+function showError(message) {
+    const errorElement = document.getElementById('error-message');
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+    setTimeout(() => {
+        errorElement.style.display = 'none';
+    }, 5000);
+}
+
+// Validate API key format
+function isValidApiKey(key) {
+    return key && key.length > 20; // Basic validation
+}
+
 async function analyzeText() {
-    document.getElementById('loading').style.display = 'block';
+    // Reset UI
     const resultsSection = document.getElementById('results');
     resultsSection.style.display = 'none';
+    document.getElementById('error-message').style.display = 'none';
     clearResults();
 
+    // Get input values
     const inputText = document.getElementById('inputText').value.trim().replace(/\s+/g, ' ');
     const birthDate = document.getElementById('birthDate').value;
     const entityType = document.getElementById('entityType').value;
     const analysisType = document.getElementById('analysisType').value;
-
-    if (!inputText) {
-        alert('الرجاء إدخال اسم أو كيان للتحليل.');
-        document.getElementById('loading').style.display = 'none';
-        return;
-    }
-
     const apiKey = document.getElementById('openrouterKey').value.trim();
-    if (!apiKey) {
-        alert('لم يتم توفير مفتاح API. توقف التحليل.');
-        document.getElementById('loading').style.display = 'none';
+
+    // Input validation
+    if (!inputText) {
+        showError('الرجاء إدخال اسم أو كيان للتحليل.');
         return;
     }
 
-    const gematriaResult = calculateAdvancedGematria(inputText);
-    displayLocalResults(inputText, birthDate, entityType, analysisType, gematriaResult);
-    resultsSection.style.display = 'block';
+    if (!apiKey) {
+        showError('مفتاح API مطلوب للمتابعة. الرجاء إدخال مفتاح OpenRouter API.');
+        return;
+    }
 
-    // The AI prompt is now generated on the server, so we don't need createAIPrompt here.
+    if (!isValidApiKey(apiKey)) {
+        showError('مفتاح API غير صالح. يرجى التحقق من المفتاح والمحاولة مرة أخرى.');
+        return;
+    }
+
+    // Show loading state
+    showLoading('جاري تحليل البيانات...');
 
     try {
+        // Calculate local results
+        // Show local results immediately
+        const gematriaResult = calculateAdvancedGematria(inputText);
+        displayLocalResults(inputText, birthDate, entityType, analysisType, gematriaResult);
+        resultsSection.style.display = 'block';
+        
+        // Prepare AI data
         const aiData = {
             name: inputText,
             type: entityType === 'person' ? 'شخص' : 'دولة',
@@ -41,6 +78,9 @@ async function analyzeText() {
             apiKey: apiKey
         };
 
+        // Call AI analysis
+        showLoading('جاري تحليل البيانات باستخدام الذكاء الاصطناعي...');
+        
         const response = await fetch('/api/ai_analysis', {
             method: 'POST',
             headers: {
@@ -49,19 +89,45 @@ async function analyzeText() {
             body: JSON.stringify(aiData)
         });
 
+        // Handle API response
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            let errorMessage = 'حدث خطأ أثناء معالجة الطلب';
+            
+            if (response.status === 401) {
+                errorMessage = 'مفتاح API غير صالح أو منتهي الصلاحية. يرجى التحقق من المفتاح والمحاولة مرة أخرى.';
+            } else if (response.status === 429) {
+                errorMessage = 'تم تجاوز الحد المسموح من الطلبات. يرجى المحاولة مرة أخرى لاحقًا.';
+            } else if (errorData.error) {
+                errorMessage = errorData.error.message || errorMessage;
+            }
+            
+            throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+        
+        if (responseData.error) {
+            throw new Error(responseData.error);
+        }
+        
+        // Display AI results if available
+        if (responseData.analysis) {
+            displayAIResults(responseData.analysis);
+        } else {
+            showError('لم يتم العثور على نتائج. يرجى المحاولة مرة أخرى.');
+        }
+
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error || 'حدث خطأ غير معروف من الخادم.');
         }
-
-        const data = await response.json();
-        const aiAnalysis = data.result;
-        displayAIResults(aiAnalysis);
-
     } catch (error) {
-        console.error('Error calling backend API:', error);
-        document.getElementById('axes-results').innerHTML = `<p class="error">فشل الاتصال بالخادم. تأكد من أن الخادم يعمل وأن البيانات صحيحة.<br>${error.message}</p>`;
+        console.error('Error:', error);
+        showError(error.message || 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
+        document.getElementById('loading').style.display = 'none';
     } finally {
+        // Hide loading indicator when done
         document.getElementById('loading').style.display = 'none';
     }
 }
@@ -168,6 +234,95 @@ function displayAIResults(aiAnalysis) {
     document.getElementById('recommendation-result').innerHTML = recommendationHTML;
 }
 
+
+// Example data for demonstration
+const exampleData = {
+    saudi: {
+        name: 'المملكة العربية السعودية',
+        type: 'country',
+        year: new Date().getFullYear(),
+        analysis: {
+            'الوضع السياسي': 'استقرار سياسي مع تركيز على الإصلاحات الاقتصادية والاجتماعية',
+            'الاقتصاد': 'نمو اقتصادي معتدل مع استمرار جهود التنويع بعيدًا عن النفط',
+            'السياحة': 'توسع في قطاع السياحة مع مشاريع ضخمة مثل نيوم والعلا',
+            'الطاقة': 'استثمارات كبيرة في الطاقة المتجددة والهيدروجين الأخضر'
+        }
+    },
+    uae: {
+        name: 'دولة الإمارات العربية المتحدة',
+        type: 'country',
+        year: new Date().getFullYear(),
+        analysis: {
+            'الاقتصاد': 'تنوع اقتصادي قوي مع استمرار النمو في القطاعات غير النفطية',
+            'الابتكار': 'قيادة إقليمية في مجال التكنولوجيا والذكاء الاصطناعي',
+            'السياسة الخارجية': 'تعزيز العلاقات الإقليمية والدولية',
+            'الاستدامة': 'استثمارات كبيرة في الطاقة النظيفة والتنمية المستدامة'
+        }
+    },
+    person: {
+        name: 'عمر أحمد',
+        type: 'person',
+        year: 1990,
+        analysis: {
+            'الشخصية': 'قائد بطبيعته، طموح، ومبتكر',
+            'المسار المهني': 'توقعات بتطور إيجابي في المجال التقني أو الإداري',
+            'الحياة الشخصية': 'استقرار عائلي مع فرص للسفر',
+            'الصحة': 'حالة صحية جيدة مع الحاجة للاهتمام بالنشاط البدني'
+        }
+    }
+};
+
+// Initialize example buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for example buttons
+    document.querySelectorAll('.btn-example').forEach(button => {
+        button.addEventListener('click', function() {
+            const exampleId = this.closest('.example-card').dataset.example;
+            loadExample(exampleId);
+            
+            // Scroll to the form
+            document.getElementById('inputForm').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    });
+});
+
+// Load example data into the form
+function loadExample(exampleId) {
+    const example = exampleData[exampleId];
+    if (!example) return;
+
+    // Update form fields
+    document.getElementById('inputText').value = example.name;
+    document.getElementById('inputYear').value = example.year;
+    document.querySelector(`input[name="entityType"][value="${example.type}"]`).checked = true;
+    
+    // Update the UI
+    updateInputFields();
+    
+    // Show success message
+    showSuccess(`تم تحميل مثال "${example.name}" بنجاح`);
+}
+
+// Show success message
+function showSuccess(message) {
+    const successMsg = document.createElement('div');
+    successMsg.className = 'success-message';
+    successMsg.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(successMsg, container.firstChild);
+    
+    // Remove message after 5 seconds
+    setTimeout(() => {
+        successMsg.style.opacity = '0';
+        setTimeout(() => successMsg.remove(), 300);
+    }, 5000);
+}
 
 // --- CALCULATION HELPERS AND DATA ---
 
